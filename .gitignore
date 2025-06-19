@@ -1,0 +1,9 @@
+build/
+log/
+install/
+tf_logs/
+maps/
+explore/
+map_merge/
+robot_localization/
+*.pyc
