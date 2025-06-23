@@ -1,18 +1,62 @@
 <?xml version='1.0' encoding='utf-8'?>
 <robot name="beetlebot" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+    <xacro:arg name="namespace" default="" />
+    <xacro:property name="namespace" value="$(arg namespace)" />
+
     <xacro:include filename="$(find beetlebot_description)/urdf/beetlebot.gazebo" />
 
+    <material name="base_link_material">
+        <color rgba="0.033104766565152086 0.46778379610254284 0.12477181755144427 1" />
+    </material>
+    <material name="wheel_right_material">
+        <color rgba="0.6375968739867731 0.04373502925049377 0.008023192982520563 1" />
+    </material>
+    <material name="wheel_left_material">
+        <color rgba="0.6375968739867731 0.04373502925049377 0.008023192982520563 1" />
+    </material>
+    <material name="top_base_material">
+        <color rgba="0.033104766565152086 0.46778379610254284 0.12477181755144427 1" />
+    </material>
+    <material name="front_caster_material">
+        <color rgba="0.10702310296918527 0.0069954101845983935 0.3371636150376657 1" />
+    </material>
+
+    <material name="rear_caster_material">
+        <color rgba="0.10702310296918527 0.0069954101845983935 0.3371636150376657 1" />
+    </material>
+
+    <material name="right_bar_material">
+        <color rgba="0.23839757380151394 0.12743768042608497 0.7529422167708612 1" />
+    </material>
+
+    <material name="left_bar_material">
+        <color rgba="0.23839757380151394 0.12743768042608497 0.7529422167708612 1" />
+    </material>
+    <material name="rear_bar_material">
+        <color rgba="0.23839757380151394 0.12743768042608497 0.7529422167708612 1" />
+    </material>
+
+    <material name="lidar_material">
+        <color rgba="0 0 0 1" />
+    </material>
+
+    <material name="camera_material">
+        <color rgba="0.015996293361446288 0.22696587349938613 0.07036009568874305 1" />
+    </material>
+
+    <material name="imu_material">
+        <color rgba="0.25 0.33 0.33 1" />
+    </material>
+
     <!-- Base Link -->
-    <link name="base_link">
+    <link name="${namespace}base_link">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
                 <cylinder radius="0.3" length="0.1" />
             </geometry>
-            <material name="base_link_material">
-                <color rgba="0.033104766565152086 0.46778379610254284 0.12477181755144427 1" />
-            </material>
+            <material name="base_link_material" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -28,15 +72,13 @@
     </link>
 
     <!-- Right Wheel Link -->
-    <link name="wheel_right">
+    <link name="${namespace}wheel_right">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
                 <cylinder radius="0.15" length="0.07" />
             </geometry>
-            <material name="wheel_right_material">
-                <color rgba="0.6375968739867731 0.04373502925049377 0.008023192982520563 1" />
-            </material>
+            <material name="wheel_right_material" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -53,23 +95,21 @@
     </link>
 
     <!-- Right Wheel Joint -->
-    <joint name="base_link_to_wheel_right" type="continuous">
-        <parent link="base_link" />
-        <child link="wheel_right" />
+    <joint name="${namespace}base_link_to_wheel_right" type="continuous">
+        <parent link="${namespace}base_link" />
+        <child link="${namespace}wheel_right" />
         <origin xyz="0 -0.33 -0.05" rpy="1.5707963267948963 0 0" />
         <axis xyz="0 0 -1" />
     </joint>
 
     <!-- Left Wheel Link -->
-    <link name="wheel_left">
+    <link name="${namespace}wheel_left">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
                 <cylinder radius="0.15" length="0.07" />
             </geometry>
-            <material name="wheel_left_material">
-                <color rgba="0.6375968739867731 0.04373502925049377 0.008023192982520563 1" />
-            </material>
+            <material name="wheel_left_material" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -86,23 +126,21 @@
     </link>
 
     <!-- Left Wheel Joint -->
-    <joint name="base_link_to_wheel_left" type="continuous">
-        <parent link="base_link" />
-        <child link="wheel_left" />
+    <joint name="${namespace}base_link_to_wheel_left" type="continuous">
+        <parent link="${namespace}base_link" />
+        <child link="${namespace}wheel_left" />
         <origin xyz="0 0.33 -0.05" rpy="1.5707963267948963 0 0" />
         <axis xyz="0 0 -1" />
     </joint>
 
     <!-- Top Base Link -->
-    <link name="top_base">
+    <link name="${namespace}top_base">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
                 <cylinder radius="0.3" length="0.1" />
             </geometry>
-            <material name="top_base_material">
-                <color rgba="0.033104766565152086 0.46778379610254284 0.12477181755144427 1" />
-            </material>
+            <material name="top_base_material" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -119,22 +157,20 @@
     </link>
 
     <!-- Top Base Joint -->
-    <joint name="base_link_to_top_base" type="fixed">
-        <parent link="base_link" />
-        <child link="top_base" />
+    <joint name="${namespace}base_link_to_top_base" type="fixed">
+        <parent link="${namespace}base_link" />
+        <child link="${namespace}top_base" />
         <origin xyz="0 0 0.45" rpy="0 0 0" />
     </joint>
 
     <!-- Front Caster Link -->
-    <link name="front_caster">
+    <link name="${namespace}front_caster">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
                 <sphere radius="0.1" />
             </geometry>
-            <material name="front_caster_material">
-                <color rgba="0.10702310296918527 0.0069954101845983935 0.3371636150376657 1" />
-            </material>
+            <material name="front_caster_material" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -151,23 +187,21 @@
     </link>
 
     <!-- Front Caster Joint -->
-    <joint name="base_link_to_front_caster" type="fixed">
-        <parent link="base_link" />
-        <child link="front_caster" />
+    <joint name="${namespace}base_link_to_front_caster" type="fixed">
+        <parent link="${namespace}base_link" />
+        <child link="${namespace}front_caster" />
         <origin xyz="0.2 0 -0.1" rpy="0 0 0" />
         <axis xyz="0 1 0" />
     </joint>
 
     <!-- Rear Caster Link -->
-    <link name="rear_caster">
+    <link name="${namespace}rear_caster">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
                 <sphere radius="0.1" />
             </geometry>
-            <material name="rear_caster_material">
-                <color rgba="0.10702310296918527 0.0069954101845983935 0.3371636150376657 1" />
-            </material>
+            <material name="rear_caster_material" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -183,23 +217,21 @@
     </link>
 
     <!-- Rear Caster Joint -->
-    <joint name="base_link_to_rear_caster" type="fixed">
-        <parent link="base_link" />
-        <child link="rear_caster" />
+    <joint name="${namespace}base_link_to_rear_caster" type="fixed">
+        <parent link="${namespace}base_link" />
+        <child link="${namespace}rear_caster" />
         <origin xyz="-0.2 0 -0.1" rpy="0 0 0" />
         <axis xyz="0 1 0" />
     </joint>
 
     <!-- Right Bar Link -->
-    <link name="right_bar">
+    <link name="${namespace}right_bar">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
                 <cylinder radius="0.03" length="0.5" />
             </geometry>
-            <material name="right_bar_material">
-                <color rgba="0.23839757380151394 0.12743768042608497 0.7529422167708612 1" />
-            </material>
+            <material name="right_bar_material" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -216,22 +248,20 @@
     </link>
 
     <!-- Right Bar Joint -->
-    <joint name="base_link_to_right_bar" type="fixed">
-        <parent link="base_link" />
-        <child link="right_bar" />
+    <joint name="${namespace}base_link_to_right_bar" type="fixed">
+        <parent link="${namespace}base_link" />
+        <child link="${namespace}right_bar" />
         <origin xyz="0 0.2 0.2058808723746403" rpy="0 0 0" />
     </joint>
 
     <!-- Left Bar Link -->
-    <link name="left_bar">
+    <link name="${namespace}left_bar">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
                 <cylinder radius="0.03" length="0.5" />
             </geometry>
-            <material name="left_bar_material">
-                <color rgba="0.23839757380151394 0.12743768042608497 0.7529422167708612 1" />
-            </material>
+            <material name="left_bar_material" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -248,22 +278,20 @@
     </link>
 
     <!-- Left Bar Joint -->
-    <joint name="base_link_to_left_bar" type="fixed">
-        <parent link="base_link" />
-        <child link="left_bar" />
+    <joint name="${namespace}base_link_to_left_bar" type="fixed">
+        <parent link="${namespace}base_link" />
+        <child link="${namespace}left_bar" />
         <origin xyz="0 -0.2 0.2058808723746403" rpy="0 0 0" />
     </joint>
 
     <!-- Rear Bar Link -->
-    <link name="rear_bar">
+    <link name="${namespace}rear_bar">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
                 <cylinder radius="0.03" length="0.5" />
             </geometry>
-            <material name="rear_bar_material">
-                <color rgba="0.23839757380151394 0.12743768042608497 0.7529422167708612 1" />
-            </material>
+            <material name="rear_bar_material" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -280,22 +308,20 @@
     </link>
 
     <!-- Rear Bar Joint -->
-    <joint name="base_link_to_rear_bar" type="fixed">
-        <parent link="base_link" />
-        <child link="rear_bar" />
+    <joint name="${namespace}base_link_to_rear_bar" type="fixed">
+        <parent link="${namespace}base_link" />
+        <child link="${namespace}rear_bar" />
         <origin xyz="-0.2 0 0.2058808723746403" rpy="0 0 0" />
     </joint>
 
     <!-- Lidar Link -->
-    <link name="lidar_link">
+    <link name="${namespace}lidar">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
                 <cylinder radius="0.1" length="0.13538975482266932" />
             </geometry>
-            <material name="lidar_material">
-                <color rgba="0 0 0 1" />
-            </material>
+            <material name="lidar_material" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -312,22 +338,20 @@
     </link>
 
     <!-- Lidar Joint -->
-    <joint name="base_link_to_lidar" type="fixed">
-        <parent link="base_link" />
-        <child link="lidar_link" />
+    <joint name="${namespace}base_link_to_lidar" type="fixed">
+        <parent link="${namespace}base_link" />
+        <child link="${namespace}lidar" />
         <origin xyz="0 0 0.57" rpy="0 0 0" />
     </joint>
 
     <!-- Camera Link -->
-    <link name="camera_link">
+    <link name="${namespace}camera">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
                 <box size="0.05 0.2 0.1" />
             </geometry>
-            <material name="camera_material">
-                <color rgba="0.015996293361446288 0.22696587349938613 0.07036009568874305 1" />
-            </material>
+            <material name="camera_material" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -344,24 +368,22 @@
     </link>
 
     <!-- Camera Joint -->
-    <joint name="base_link_to_camera" type="revolute">
-        <parent link="base_link" />
-        <child link="camera_link" />
+    <joint name="${namespace}base_link_to_camera" type="revolute">
+        <parent link="${namespace}base_link" />
+        <child link="${namespace}camera" />
         <origin xyz="0.3 0 0.34" rpy="0 0 0" />
         <axis xyz="0 1 0" />
 
         <limit lower="-1.14" upper="1.14" velocity="3.14" effort="10.0" />
     </joint>
 
-    <link name="imu_link">
+    <link name="${namespace}imu_link">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
                 <cylinder radius="0.05" length="0.135" />
             </geometry>
-            <material name="imu_material">
-                <color rgba="0.25 0.33 0.33 1" />
-            </material>
+            <material name="imu_material" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -377,18 +399,17 @@
     </link>
 
 
-    <joint name="base_link_to_imu" type="fixed">
-        <parent link="base_link" />
-        <child link="imu_link" />
+    <joint name="${namespace}base_link_to_imu" type="fixed">
+        <parent link="${namespace}base_link" />
+        <child link="${namespace}imu_link" />
         <origin xyz="0 0 0.1" rpy="0 0 0" />
     </joint>
 
-    <gazebo reference="imu_link">
+    <gazebo reference="${namespace}imu_link">
         <sensor name="imu_sensor" type="imu">
             <ignition_frame_id>imu_link</ignition_frame_id>
             <plugin filename="ignition-gazebo-imu-system" name="ignition::gazebo::systems::Imu">
             </plugin>
-
             <topic>imu</topic>
             <always_on>true</always_on>
             <update_rate>100</update_rate>

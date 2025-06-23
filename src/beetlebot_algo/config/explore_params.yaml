@@ -5,7 +5,8 @@
     costmap_topic: /global_costmap/costmap
     costmap_updates_topic: map_updates
     visualize: true
-    planner_frequency: 0.15
+    # dsaasd
+    planner_frequency: 0.5
     progress_timeout: 60.0
     potential_scale: 0.1
     orientation_scale: 0.0

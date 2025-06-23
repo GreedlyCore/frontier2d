@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(beetlebot_algo)
+project(pyexplore)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -11,35 +11,13 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-
-
-# add_executable(my_node src/my_node.cpp)
-# target_include_directories(my_node PUBLIC
-#   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#   $<INSTALL_INTERFACE:include>)
-# target_compile_features(my_node PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
-
-# install(TARGETS my_node
-#   DESTINATION lib/${PROJECT_NAME})
-
-
-
-install(DIRECTORY 
-  launch
-  config
-  DESTINATION share/${PROJECT_NAME}
-)
-
 # Install Python scripts
 install(PROGRAMS
-  scripts/frontend.py
-  scripts/LidarMapping.py
-  scripts/bresenham.py
-  scripts/utils.py
-  scripts/GraphUtils.py
-  scripts/odom_noisy.py
-  scripts/frontiers.py
-  scripts/test_map.py
+  scripts/explore_node.py
+  scripts/frontier_search.py
+  scripts/costmap_client.py
+  scripts/costmap_2d.py
+  scripts/tools.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

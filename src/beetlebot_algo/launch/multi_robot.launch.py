@@ -45,6 +45,8 @@ def replace_namespace_in_params(yaml_file_path, namespace):
     print(f"Modified YAML has been saved to {path}")
     return path
 
+#TODO: why in rqt_graph appear behavior_server and smth else from nav2 ?
+
 def generate_launch_description():
     ld = LaunchDescription()
 
@@ -52,8 +54,8 @@ def generate_launch_description():
     robots = [
         {'name': 'rb1', 'x_pose': '-1.5', 'y_pose': '-0.5', 'z_pose': '0.3'},
         {'name': 'rb2', 'x_pose': '-1.5', 'y_pose': '0.5', 'z_pose': '0.3'},
-        # {'name': 'tb3', 'x_pose': '1.5', 'y_pose': '-0.5', 'z_pose': '0.01'},
-        # {'name': 'tb4', 'x_pose': '1.5', 'y_pose': '0.5', 'z_pose': '0.01'},
+        {'name': 'rb3', 'x_pose': '4.5', 'y_pose': '-0.5', 'z_pose': '0.3'},
+        # {'name': 'rb4', 'x_pose': '1.5', 'y_pose': '0.5', 'z_pose': '0.3'},
         # ...
         # ...
         ]
@@ -75,24 +77,35 @@ def generate_launch_description():
         get_package_share_directory('beetlebot_description'),
         'urdf', 'beetlebot.xacro')
 
-    world_only = os.path.join(get_package_share_directory('beetlebot_gazebo'), "worlds", "empty_world.sdf")
-    ign_gz = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                [os.path.join(get_package_share_directory('ros_gz_sim'),
-                              'launch', 'gz_sim.launch.py')]),
-            launch_arguments=[('ign_args', [' -r -v1 ' +
-                              world_only
-                             ])])
+    # world_only = os.path.join(get_package_share_directory('beetlebot_gazebo'), "worlds", "empty_world.sdf")
+    # ign_gz = IncludeLaunchDescription(
+    #         PythonLaunchDescriptionSource(
+    #             [os.path.join(get_package_share_directory('ros_gz_sim'),
+    #                           'launch', 'gz_sim.launch.py')]),
+    #         launch_arguments=[('ign_args', [' -r -v1 ' +
+    #                           world_only
+    #                          ])])
+    
+    world_file = os.path.join(get_package_share_directory('beetlebot_gazebo'), "worlds", "warehouse_world.sdf")
 
-    ignition_spawn_world = Node(
-        package='ros_gz_sim',
-        executable='create',
-        output='screen',
-        arguments=['-file', PathJoinSubstitution([
-                        get_package_share_directory('beetlebot_gazebo'),
-                        "worlds", "warehouse_world.sdf"]),
-                   '-allow_renaming', 'false'],
-        )
+    ign_gz = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            os.path.join(get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')
+        ]),
+        launch_arguments=[
+            ('ign_args', f'-r -v1 {world_file}')
+        ]
+    )
+
+    # ignition_spawn_world = Node(
+    #     package='ros_gz_sim',
+    #     executable='create',
+    #     output='screen',
+    #     arguments=['-file', PathJoinSubstitution([
+    #                     get_package_share_directory('beetlebot_gazebo'),
+    #                     "worlds", "warehouse_world.sdf"]),
+    #                '-allow_renaming', 'false'],
+    #     )
 
     # params_file = os.path.join(turtlebot3_multi_robot, 'params', 'nav2_params.yaml')    
      
@@ -131,11 +144,14 @@ def generate_launch_description():
     # Spawn turtlebot3 instances in gazebo
     for robot in robots:
 
-        namespace = '/' + robot['name']
+        namespace = '/' + robot['name'] 
+        namespace2 = robot['name'] + '/'
 
         doc = xacro.parse(open(xacro_desc))
-        xacro.process_doc(doc, mappings={"namespace": namespace})
+        xacro.process_doc(doc, mappings={"namespace": namespace2})
         robot_description = {"robot_description": doc.toxml()}
+        
+        # print(doc.toxml())
 
         # Create state publisher node for that instance
         robot_state_publisher = Node(
@@ -227,20 +243,20 @@ def generate_launch_description():
 
     ######################
     # Start rviz nodes and drive nodes after the last robot is spawned
-    for robot in robots:
+    # for robot in robots:
 
-        namespace = [ '/' + robot['name'] ]
+    #     namespace = [ '/' + robot['name'] ]
 
-        # Create a initial pose topic publish call
-        message = '{header: {frame_id: map}, pose: {pose: {position: {x: ' + \
-            robot['x_pose'] + ', y: ' + robot['y_pose'] + \
-            ', z: 0.1}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0000000}}, }}'
+    #     # Create a initial pose topic publish call
+    #     message = '{header: {frame_id: map}, pose: {pose: {position: {x: ' + \
+    #         robot['x_pose'] + ', y: ' + robot['y_pose'] + \
+    #         ', z: 0.1}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0000000}}, }}'
 
-        initial_pose_cmd = ExecuteProcess(
-            cmd=['ros2', 'topic', 'pub', '-t', '3', '--qos-reliability', 'reliable', namespace + ['/initialpose'],
-                'geometry_msgs/PoseWithCovarianceStamped', message],
-            output='screen'
-        )
+        # initial_pose_cmd = ExecuteProcess(
+        #     cmd=['ros2', 'topic', 'pub', '-t', '3', '--qos-reliability', 'reliable', namespace + ['/initialpose'],
+        #         'geometry_msgs/PoseWithCovarianceStamped', message],
+        #     output='screen'
+        # )
 
         # rviz_config_file = os.path.join(get_package_share_directory("nav2_bringup"), 'rviz', 'nav2_default_view.rviz')
         # rviz_cmd = IncludeLaunchDescription(
@@ -254,17 +270,17 @@ def generate_launch_description():
 
         # Use RegisterEventHandler to ensure next robot rviz launch happens 
         # only after all robots are spawned
-        post_spawn_event = RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=last_action,
-                on_exit=[initial_pose_cmd,], #rviz_cmd],
-            )
-        )
+        # post_spawn_event = RegisterEventHandler(
+        #     event_handler=OnProcessExit(
+        #         target_action=last_action,
+        #         on_exit=[initial_pose_cmd,], #rviz_cmd],
+        #     )
+        # )
 
         # Perform next rviz and other node instantiation after the previous intialpose request done
-        last_action = initial_pose_cmd
+        # last_action = initial_pose_cmd
 
-        ld.add_action(post_spawn_event)
+        # ld.add_action(post_spawn_event)
     ######################
 
     return ld
