@@ -13,7 +13,7 @@ slam_toolbox:
     odom_frame: odom
     map_frame: map
     base_frame: base_link
-    scan_topic: /lidar
+    scan_topic: /namespace/lidar
     use_map_saver: true
     mode: mapping #localization
 
@@ -81,7 +81,7 @@ bt_navigator:
     use_sim_time: True
     global_frame: map
     robot_base_frame: base_link
-    odom_topic: /odom
+    odom_topic: /namespace/odom
     bt_loop_duration: 10
     default_server_timeout: 1
     enable_groot_monitoring: True
@@ -235,7 +235,7 @@ local_costmap:
         mark_threshold: 0
         observation_sources: scan
         scan:
-          topic: /lidar
+          topic: /namespace/lidar
           max_obstacle_height: 2.0
           clearing: True
           marking: True
@@ -271,7 +271,7 @@ global_costmap:
         enabled: True
         observation_sources: scan
         scan:
-          topic: /lidar
+          topic: /namespace/lidar
           max_obstacle_height: 2.0
           clearing: True
           marking: True
@@ -324,8 +324,8 @@ planner_server_rclcpp_node:
 
 recoveries_server:
   ros__parameters:
-    costmap_topic: local_costmap/costmap_raw
-    footprint_topic: local_costmap/published_footprint
+    costmap_topic: /namespace/local_costmap/costmap_raw
+    footprint_topic: /namespace/local_costmap/published_footprint
     cycle_frequency: 10.0
     recovery_plugins: ["spin", "backup"]
     spin:

@@ -10,17 +10,9 @@ from launch.conditions import IfCondition
 
 def generate_launch_description():
     
-    pkg_project_gazebo = get_package_share_directory('beetlebot_gazebo')
+    # pkg_project_gazebo = get_package_share_directory('beetlebot_gazebo')
     
-    explore_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([
-                FindPackageShare('beetlebot_algo'),
-                'launch',
-                'explore.launch.py'
-            ])
-        ])
-    )
+ 
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
@@ -31,37 +23,54 @@ def generate_launch_description():
         ]),
         launch_arguments={'world': 'big_warehouse.sdf'}.items()
     )
-    odom_noisy_node = Node(
-        package='beetlebot_algo',
-        executable='odom_noisy.py',
-        name='noisy_odometry_node',
-        output='screen'
-    )
 
     nav_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
-                FindPackageShare('beetlebot_gazebo'),
+                FindPackageShare('beetlebot_bringup'),
                 'launch',
                 'nav_stack.launch.py'
             ])
         ])
     )
     
+    config = os.path.join(
+        get_package_share_directory("beetlebot_algo"), "config", "explore_params.yaml"
+    )
+    use_sim_time = LaunchConfiguration("use_sim_time")
+    namespace = LaunchConfiguration("namespace")
 
-    ekf_node = Node(
-            package='robot_localization',
-            executable='ekf_node',
-            name='ekf_filter_node',
-            output='screen',
-            parameters=[os.path.join(get_package_share_directory("beetlebot_algo"), 'config', 'ekf.yaml')],
-           )
+    declare_use_sim_time_argument = DeclareLaunchArgument(
+        "use_sim_time", default_value="true", description="Use simulation/Gazebo clock"
+    )
+    declare_namespace_argument = DeclareLaunchArgument(
+        "namespace",
+        default_value="",
+        description="Namespace for the explore node",
+    )
+
+    # Map fully qualified names to relative ones so the node's namespace can be prepended.
+    # In case of the transforms (tf), currently, there doesn't seem to be a better alternative
+    # https://github.com/ros/geometry2/issues/32
+    # https://github.com/ros/robot_state_publisher/pull/30
+    remappings = [("/tf", "tf"), ("/tf_static", "tf_static")]
+
+    explore_launch = Node(
+        package="explore_lite",
+        name="explore_node",
+        namespace=namespace,
+        executable="explore",
+        parameters=[config, {"use_sim_time": use_sim_time}],
+        output="screen",
+        remappings=remappings,
+        # arguments=['--ros-args', '--log-level', 'DEBUG' ]
+    )
 
     # RViz
     rviz = Node(
        package='rviz2',
        executable='rviz2',
-       arguments=['-d', os.path.join(pkg_project_gazebo, 'rviz', 'beetlebot.rviz')],
+       arguments=['-d', 'src/beetlebot_gazebo/rviz/frontier_lite_rviz.rviz'],
        condition=IfCondition(LaunchConfiguration('rviz'))
     )
     
@@ -69,19 +78,12 @@ def generate_launch_description():
         DeclareLaunchArgument('rviz', default_value='true', description='Open RViz.'),
         gazebo_launch,
         TimerAction(
-            period=12.0,
+            period=2.0,
             actions=[
                 nav_launch,
                 explore_launch,
                 rviz
             ]
-        ),
-        TimerAction(
-            period=5.0,
-            actions=[
-                odom_noisy_node,
-                # ekf_node
-            ]
-        ),
+        ),        
     ])
 

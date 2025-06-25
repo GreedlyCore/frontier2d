@@ -3,7 +3,6 @@
 
     <xacro:arg name="namespace" default="" />
     <xacro:property name="namespace" value="$(arg namespace)" />
-
     <xacro:include filename="$(find beetlebot_description)/urdf/beetlebot.gazebo" />
 
     <material name="base_link_material">
@@ -50,7 +49,7 @@
     </material>
 
     <!-- Base Link -->
-    <link name="${namespace}base_link">
+    <link name="base_link">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -72,7 +71,7 @@
     </link>
 
     <!-- Right Wheel Link -->
-    <link name="${namespace}wheel_right">
+    <link name="wheel_right">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -95,15 +94,15 @@
     </link>
 
     <!-- Right Wheel Joint -->
-    <joint name="${namespace}base_link_to_wheel_right" type="continuous">
-        <parent link="${namespace}base_link" />
-        <child link="${namespace}wheel_right" />
+    <joint name="base_link_to_wheel_right" type="continuous">
+        <parent link="base_link" />
+        <child link="wheel_right" />
         <origin xyz="0 -0.33 -0.05" rpy="1.5707963267948963 0 0" />
         <axis xyz="0 0 -1" />
     </joint>
 
     <!-- Left Wheel Link -->
-    <link name="${namespace}wheel_left">
+    <link name="wheel_left">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -126,15 +125,15 @@
     </link>
 
     <!-- Left Wheel Joint -->
-    <joint name="${namespace}base_link_to_wheel_left" type="continuous">
-        <parent link="${namespace}base_link" />
-        <child link="${namespace}wheel_left" />
+    <joint name="base_link_to_wheel_left" type="continuous">
+        <parent link="base_link" />
+        <child link="wheel_left" />
         <origin xyz="0 0.33 -0.05" rpy="1.5707963267948963 0 0" />
         <axis xyz="0 0 -1" />
     </joint>
 
     <!-- Top Base Link -->
-    <link name="${namespace}top_base">
+    <link name="top_base">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -157,14 +156,14 @@
     </link>
 
     <!-- Top Base Joint -->
-    <joint name="${namespace}base_link_to_top_base" type="fixed">
-        <parent link="${namespace}base_link" />
-        <child link="${namespace}top_base" />
+    <joint name="base_link_to_top_base" type="fixed">
+        <parent link="base_link" />
+        <child link="top_base" />
         <origin xyz="0 0 0.45" rpy="0 0 0" />
     </joint>
 
     <!-- Front Caster Link -->
-    <link name="${namespace}front_caster">
+    <link name="front_caster">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -187,15 +186,15 @@
     </link>
 
     <!-- Front Caster Joint -->
-    <joint name="${namespace}base_link_to_front_caster" type="fixed">
-        <parent link="${namespace}base_link" />
-        <child link="${namespace}front_caster" />
+    <joint name="base_link_to_front_caster" type="fixed">
+        <parent link="base_link" />
+        <child link="front_caster" />
         <origin xyz="0.2 0 -0.1" rpy="0 0 0" />
         <axis xyz="0 1 0" />
     </joint>
 
     <!-- Rear Caster Link -->
-    <link name="${namespace}rear_caster">
+    <link name="rear_caster">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -217,15 +216,15 @@
     </link>
 
     <!-- Rear Caster Joint -->
-    <joint name="${namespace}base_link_to_rear_caster" type="fixed">
-        <parent link="${namespace}base_link" />
-        <child link="${namespace}rear_caster" />
+    <joint name="base_link_to_rear_caster" type="fixed">
+        <parent link="base_link" />
+        <child link="rear_caster" />
         <origin xyz="-0.2 0 -0.1" rpy="0 0 0" />
         <axis xyz="0 1 0" />
     </joint>
 
     <!-- Right Bar Link -->
-    <link name="${namespace}right_bar">
+    <link name="right_bar">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -248,14 +247,14 @@
     </link>
 
     <!-- Right Bar Joint -->
-    <joint name="${namespace}base_link_to_right_bar" type="fixed">
-        <parent link="${namespace}base_link" />
-        <child link="${namespace}right_bar" />
+    <joint name="base_link_to_right_bar" type="fixed">
+        <parent link="base_link" />
+        <child link="right_bar" />
         <origin xyz="0 0.2 0.2058808723746403" rpy="0 0 0" />
     </joint>
 
     <!-- Left Bar Link -->
-    <link name="${namespace}left_bar">
+    <link name="left_bar">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -278,14 +277,14 @@
     </link>
 
     <!-- Left Bar Joint -->
-    <joint name="${namespace}base_link_to_left_bar" type="fixed">
-        <parent link="${namespace}base_link" />
-        <child link="${namespace}left_bar" />
+    <joint name="base_link_to_left_bar" type="fixed">
+        <parent link="base_link" />
+        <child link="left_bar" />
         <origin xyz="0 -0.2 0.2058808723746403" rpy="0 0 0" />
     </joint>
 
     <!-- Rear Bar Link -->
-    <link name="${namespace}rear_bar">
+    <link name="rear_bar">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -308,14 +307,14 @@
     </link>
 
     <!-- Rear Bar Joint -->
-    <joint name="${namespace}base_link_to_rear_bar" type="fixed">
-        <parent link="${namespace}base_link" />
-        <child link="${namespace}rear_bar" />
+    <joint name="base_link_to_rear_bar" type="fixed">
+        <parent link="base_link" />
+        <child link="rear_bar" />
         <origin xyz="-0.2 0 0.2058808723746403" rpy="0 0 0" />
     </joint>
 
     <!-- Lidar Link -->
-    <link name="${namespace}lidar">
+    <link name="lidar">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -338,14 +337,14 @@
     </link>
 
     <!-- Lidar Joint -->
-    <joint name="${namespace}base_link_to_lidar" type="fixed">
-        <parent link="${namespace}base_link" />
-        <child link="${namespace}lidar" />
+    <joint name="base_link_to_lidar" type="fixed">
+        <parent link="base_link" />
+        <child link="lidar" />
         <origin xyz="0 0 0.57" rpy="0 0 0" />
     </joint>
 
     <!-- Camera Link -->
-    <link name="${namespace}camera">
+    <link name="camera">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -368,16 +367,16 @@
     </link>
 
     <!-- Camera Joint -->
-    <joint name="${namespace}base_link_to_camera" type="revolute">
-        <parent link="${namespace}base_link" />
-        <child link="${namespace}camera" />
+    <joint name="base_link_to_camera" type="revolute">
+        <parent link="base_link" />
+        <child link="camera" />
         <origin xyz="0.3 0 0.34" rpy="0 0 0" />
         <axis xyz="0 1 0" />
 
         <limit lower="-1.14" upper="1.14" velocity="3.14" effort="10.0" />
     </joint>
 
-    <link name="${namespace}imu_link">
+    <link name="imu_link">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -399,18 +398,18 @@
     </link>
 
 
-    <joint name="${namespace}base_link_to_imu" type="fixed">
-        <parent link="${namespace}base_link" />
-        <child link="${namespace}imu_link" />
+    <joint name="base_link_to_imu" type="fixed">
+        <parent link="base_link" />
+        <child link="imu_link" />
         <origin xyz="0 0 0.1" rpy="0 0 0" />
     </joint>
 
-    <gazebo reference="${namespace}imu_link">
+    <gazebo reference="imu_link">
         <sensor name="imu_sensor" type="imu">
             <ignition_frame_id>imu_link</ignition_frame_id>
             <plugin filename="ignition-gazebo-imu-system" name="ignition::gazebo::systems::Imu">
             </plugin>
-            <topic>imu</topic>
+            <topic>$(arg namespace)imu</topic>
             <always_on>true</always_on>
             <update_rate>100</update_rate>
             <visualize>true</visualize>

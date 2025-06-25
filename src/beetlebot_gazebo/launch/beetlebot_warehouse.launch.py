@@ -73,7 +73,7 @@ def generate_launch_description():
     # Spawn the Robot
     declare_spawn_x = DeclareLaunchArgument("x", default_value="0.0",
                                             description="Model Spawn X Axis Value")
-    declare_spawn_y = DeclareLaunchArgument("y", default_value="10.0",
+    declare_spawn_y = DeclareLaunchArgument("y", default_value="0.0",
                                             description="Model Spawn Y Axis Value")
     declare_spawn_z = DeclareLaunchArgument("z", default_value="0.5",
                                             description="Model Spawn Z Axis Value")

@@ -40,7 +40,7 @@ def generate_launch_description():
     nav_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
-                FindPackageShare('beetlebot_gazebo'),
+                FindPackageShare('beetlebot_bringup'),
                 'launch',
                 'nav_stack.launch.py'
             ])
@@ -57,13 +57,12 @@ def generate_launch_description():
             parameters=[os.path.join(get_package_share_directory("beetlebot_algo"), 'config', 'ekf.yaml')],
            )
 
-    
     # RViz
     # essential for use FindPackageShare instead of `rviz_config_file = os.path.join(pkg_project_gazebo, 'rviz', 'frontier_rviz')`
     rviz = Node(
        package='rviz2',
        executable='rviz2',
-       arguments=['-d', '/home/sonieth2/ros/ros2/projects/pose-graph-slam/beetlebot/src/beetlebot_gazebo/rviz/frontier_rviz.rviz'], #  'beetlebot.rviz' 
+       arguments=['-d', 'src/beetlebot_gazebo/rviz/pyfrontier_rviz.rviz'], #  'beetlebot.rviz' 
     #    arguments=['-d', LaunchConfiguration("rvizconfig")], #  'beetlebot.rviz' 
        parameters=[{'use_sim_time': True}],
        condition=IfCondition(LaunchConfiguration('rviz'))
@@ -72,7 +71,6 @@ def generate_launch_description():
 
     return LaunchDescription([
         DeclareLaunchArgument('rviz', default_value='true', description='Open RViz.'),
-        
         DeclareLaunchArgument(
             "rvizconfig",
             default_value=PathJoinSubstitution([
@@ -89,14 +87,4 @@ def generate_launch_description():
             actions=[
                 nav_launch,
             ])
-        # TimerAction(
-        #     period=3.0,
-        #     actions=[
-        #         nav_launch,
-        #         explore_launch,
-        #         # odom_noisy_node,
-        #         # ekf_node,
-        #         rviz,
-        #     ]
-        # ),
     ])

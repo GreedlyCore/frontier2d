@@ -8,6 +8,15 @@
       <max_contacts>10</max_contacts>
     </physics>
 
+    <!-- Laser Scanner Plugin -->
+    <!-- https://github.com/gazebosim/gz-sim/issues/1473 -->
+    <!-- TODO: Separate file for world plugins? -->
+    <plugin
+      filename="ignition-gazebo-sensors-system"
+      name="ignition::gazebo::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
     <plugin
       filename="ignition-gazebo-physics-system"
       name="gz::sim::systems::Physics">
@@ -108,6 +117,68 @@
       </link>
       <pose>0 0 0 0 0 0</pose>
     </model>
+
+    <!-- Dynamic Object - Actor !!! -->
+    <!-- https://gazebosim.org/docs/fortress/actors/ -->
+
+    <!-- <actor name="actor_walking">
+      <skin>
+        <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+        <scale>1.0</scale>
+      </skin>
+      <animation name="walk">
+        <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+      </animation>
+      <script>
+        <loop>true</loop>
+        <delay_start>0.000000</delay_start>
+        <auto_start>true</auto_start>
+        <trajectory id="0" type="walk" tension="0.6">
+          <waypoint>
+            <time>0</time>
+            <pose>0 0 1.0 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>2</time>
+            <pose>2.0 0 1.0 0 0 0</pose>
+          </waypoint>
+          <waypoint>
+            <time>2.5</time>
+            <pose>2 0 1.0 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>4</time>
+            <pose>2 2 1.0 0 0 1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>4.5</time>
+            <pose>2 2 1.0 0 0 3.142</pose>
+          </waypoint>
+          <waypoint>
+            <time>6</time>
+            <pose>0 2 1 0 0 3.142</pose>
+          </waypoint>
+          <waypoint>
+            <time>6.5</time>
+            <pose>0 2 1 0 0 -1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>8</time>
+            <pose>0 0 1.0 0 0 -1.57</pose>
+          </waypoint>
+          <waypoint>
+            <time>8.5</time>
+            <pose>0 0 1.0 0 0 0</pose>
+          </waypoint>
+        </trajectory>
+      </script>
+    </actor> -->
+
+    <!-- <include>
+      <uri>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Walking Actor</uri>
+      <name>walking_actor</name>
+      <pose>0 0 1.0 0 0 0</pose>
+    </include> -->
 
     <!-- Base -->
     <include>

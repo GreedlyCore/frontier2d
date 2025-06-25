@@ -1,15 +1,34 @@
-/**:
+explore_node:
   ros__parameters:
-    robot_base_frame: base_link
+    # Base frame of the robot (usually "base_link" or "base_footprint")
+    robot_base_frame: base_link   
+    # If true, robot will return to initial position after exploration
     return_to_init: false
+    # Topic where global costmap is published (from Nav2)
     costmap_topic: /global_costmap/costmap
+    # Optional topic for costmap updates (not always required)
     costmap_updates_topic: map_updates
+    # Enable visual from RViz, updates on planner frequency
     visualize: true
-    # dsaasd
-    planner_frequency: 0.5
-    progress_timeout: 60.0
-    potential_scale: 0.1
+    # Frequency (Hz) at which trying to give a new goal -- makePlan() method.
+    # Set a new goal every 20 seconds or finish that goal before and get a new one immediately
+    planner_frequency: 0.05
+    # Time (seconds) before abandoning a goal due to no progress
+    progress_timeout: 120.0
+    # Weighting factor for distance to frontier (closer = more attractive)
+    potential_scale: 10.0
+    # Weighting factor for orientation alignment (USELESS)
     orientation_scale: 0.0
+    # Weighting factor for size of frontier (larger = more attractive)
     gain_scale: 0.0
+    # Maximum time (seconds) to wait when looking up transforms
     transform_tolerance: 1.0
-    min_frontier_size: 0.5
+    # Minimum size (in meters) of a frontier to be considered valid for exploration
+    # Min cells of frontier == min_frontier_size/map_resolution
+    min_frontier_size: 1.5
+    # meters ahead of centroid
+    goal_preach_distance: 1.5
+    #### TL;DR
+    use_initial_exploration_goals: true
+    initial_goal_count: 2      # number of goals to send initially
+    initial_goal_radius: 3.0   # radius in meters

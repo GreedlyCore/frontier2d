@@ -118,7 +118,7 @@ class Explore(Node):
             m_points.frame_locked = True
             m_points.points = frontier.points
             m_points.color = red if self.goal_on_blacklist(frontier.centroid) else blue
-            m_points.lifetime.sec = 2
+            m_points.lifetime.sec = 0
             markers.append(m_points)
             id += 1
             # SPHERE marker
@@ -134,20 +134,17 @@ class Explore(Node):
             m_sphere.scale.x = m_sphere.scale.y = m_sphere.scale.z = min(abs(min_cost * 0.4 / frontier.cost), 0.5)
             m_sphere.color = green
             m_sphere.frame_locked = True
-            m_sphere.lifetime.sec = 2
+            m_sphere.lifetime.sec = 0
             markers.append(m_sphere)
             id += 1
         
         current_markers_count = len(markers)
         
-        # Delete old markers if we have fewer markers now
+        # Delete previous markers, which are now unused
         current_markers_count = len(markers)
         if current_markers_count < self.last_markers_count:
-            for i in range(current_markers_count, self.last_markers_count):
+            for i in range(id, self.last_markers_count+1):
                 delete_marker = Marker()
-                delete_marker.header.frame_id = 'map'
-                delete_marker.header.stamp = current_time
-                delete_marker.ns = "frontiers"
                 delete_marker.id = i
                 delete_marker.action = Marker.DELETE
                 markers.append(delete_marker)
@@ -159,28 +156,27 @@ class Explore(Node):
         """
         Main planning function
         """
-        # find frontiers
-        pose = self.costmap_client.get_robot_pose()
-        # get frontiers sorted according to cost
         with self.mutex_:
+            # find frontiers
+            pose = self.costmap_client.get_robot_pose()
+            # get frontiers sorted according to cost
             frontiers = self.search.search_from(pose.position)
-        
+            
+            self.get_logger().info(f'hm: {self.search.num_features} ')
         self.get_logger().debug(f"found {len(frontiers)} frontiers")
         for i, frontier in enumerate(frontiers):
             self.get_logger().debug(f"frontier {i} cost: {frontier.cost}")
         
-        if not frontiers:
-            self.stop()
-            return
-        
-        
-        self.get_logger().info(f"ZZZ: {set(self.costmap_client.get_costmap().getMap().flatten())}")
+        # TODO: temporary comment
+        # if not frontiers:
+        #     self.stop()
+        #     return
         
         # publish frontiers as visualization markers
         if self.visualize:
             self.visualize_frontiers(frontiers)
         
-        # find non blacklisted frontier
+        # find non blacklisted and most-cost frontier
         frontier = None
         for f in frontiers:
             if not self.goal_on_blacklist(f.centroid):
@@ -188,7 +184,8 @@ class Explore(Node):
                 break
         
         if frontier is None:
-            self.stop()
+            # self.stop()
+            self.get_logger().info(f"No frontiers found (???), stop.")
             return
         
         target_position = frontier.centroid

@@ -40,7 +40,7 @@ def generate_launch_description():
     nav_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
-                FindPackageShare('beetlebot_gazebo'),
+                FindPackageShare('beetlebot_bringup'),
                 'launch',
                 'nav_stack.launch.py'
             ])

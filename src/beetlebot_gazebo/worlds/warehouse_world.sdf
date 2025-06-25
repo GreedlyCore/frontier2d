@@ -21,6 +21,15 @@
       name="ignition::gazebo::systems::SceneBroadcaster">
     </plugin>
 
+    <!-- Laser Scanner Plugin -->
+    <!-- https://github.com/gazebosim/gz-sim/issues/1473 -->
+    <!-- TODO: Separate file for world plugins? -->
+    <plugin
+      filename="ignition-gazebo-sensors-system"
+      name="ignition::gazebo::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
 
     <!--  movment plugins to control robot using gzsim teleop with keyboard (No ROS) -->
 
