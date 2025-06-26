@@ -35,7 +35,7 @@ def generate_launch_description():
     )
     
     config = os.path.join(
-        get_package_share_directory("beetlebot_algo"), "config", "explore_params.yaml"
+        get_package_share_directory("beetlebot_bringup"), "config", "explore_params.yaml"
     )
     use_sim_time = LaunchConfiguration("use_sim_time")
     namespace = LaunchConfiguration("namespace")
@@ -58,7 +58,7 @@ def generate_launch_description():
     explore_launch = Node(
         package="explore_lite",
         name="explore_node",
-        namespace=namespace,
+        # namespace=namespace,
         executable="explore",
         parameters=[config, {"use_sim_time": use_sim_time}],
         output="screen",
@@ -75,12 +75,14 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
+        declare_use_sim_time_argument,
+        declare_namespace_argument,
         DeclareLaunchArgument('rviz', default_value='true', description='Open RViz.'),
         gazebo_launch,
         TimerAction(
             period=2.0,
             actions=[
-                nav_launch,
+                # nav_launch,
                 explore_launch,
                 rviz
             ]

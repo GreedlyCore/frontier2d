@@ -180,7 +180,6 @@ def generate_launch_description():
             launch_arguments={  
                 'slam': 'True',
                 'namespace': namespace,
-                # 'namespace': robot['name'],
                 'use_namespace': 'True',
                 'map': '',
                 'params_file': namespaced_param_file,
@@ -209,7 +208,7 @@ def generate_launch_description():
 
         # Exploration node for each robot
         explore_config = os.path.join(
-            get_package_share_directory("beetlebot_algo"), "config", "explore_params.yaml"
+            get_package_share_directory("beetlebot_bringup"), "config", "explore_params.yaml"
         )
         
         explore_node = Node(

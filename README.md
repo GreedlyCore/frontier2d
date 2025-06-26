@@ -1,68 +1,80 @@
-# Beetlebot 
+# Explore via SLAM-Toolbox
 
 
+## Structure of summary project (sim-real)
 ```
-├── beetlebot_algo
-│   ├── config
-│   ├── include
-│   │   └── beetlebot_algo
-│   ├── launch
-│   ├── scripts
-│   │   └── __pycache__
-│   └── src
-├── beetlebot_description
+├── maps
+├── src
+│   ├── beetlebot_bringup
+│   │   ├── config
+│   │   ├── include
+│   │   ├── launch
+│   │   ├── rviz
+│   │   └── src
 │   ├── beetlebot_description
-│   ├── config
-│   ├── launch
-│   ├── meshes
-│   ├── resource
-│   ├── test
-│   └── urdf
-├── beetlebot_gazebo
+│   │   ├── beetlebot_description
+│   │   ├── launch
+│   │   ├── meshes
+│   │   ├── resource
+│   │   ├── test
+│   │   └── urdf
 │   ├── beetlebot_gazebo
-│   ├── config
-│   ├── launch
-│   ├── models
-│   │   ├── house
-│   │   ├── track1
-│   │   └── track2
-│   ├── resource
-│   ├── rviz
-│   ├── test
-│   └── worlds
-│       └── sub_models
-├── imgs
-└── robot_localization
-    ├── doc
-    │   └── images
-    ├── include
-    │   └── robot_localization
-    ├── launch
-    ├── params
-    ├── src
-    ├── srv
-    └── test
+│   │   ├── beetlebot_gazebo
+│   │   ├── config
+│   │   ├── launch
+│   │   ├── models
+│   │   ├── resource
+│   │   ├── rviz
+│   │   └── worlds
+│   ├── explore
+│   │   ├── config
+│   │   ├── doc
+│   │   ├── include
+│   │   ├── launch
+│   │   └── src
+│   ├── map_merge
+│   │   ├── config
+│   │   ├── doc
+│   │   ├── include
+│   │   ├── launch
+│   │   ├── src
+│   │   └── test
+│   ├── pyexplore
+│   │   ├── include
+│   │   ├── launch
+│   │   ├── scripts
+│   │   └── src
+│   └── robot_localization
+│       ├── doc
+│       ├── include
+│       ├── launch
+│       ├── params
+│       ├── src
+│       ├── srv
+│       └── test
+├── tf_logs
+└── worlds
 ```
+
+So you need a SLAM-Toolbox && Nav2 full stack preinstalled before using a package.
 
 frontiers_lite.launch.py -- contains a basic exploration with classic algo
 
-metrics
-
-time
-
-quality
-
-check papers and look for using them
-
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:=/rb2/cmd_vel
 
+Listen the TF of robot1:
+```
 ros2 run tf2_tools view_frames --ros-args --remap tf:=/rb1/tf --remap tf_static:=/rb1/tf_static
+```
 
-
+Save current map:
+```
 ros2 run nav2_map_server map_saver_cli -f ~/map
+```
 
-## Related papers
-
-## Ack
-
+If building the workspace freezes linux (usually: you're run out of RAM, only reboot will save you)
+```
 colcon build --symlink-install --executor sequential
+```
+
+Written report paper in russian:

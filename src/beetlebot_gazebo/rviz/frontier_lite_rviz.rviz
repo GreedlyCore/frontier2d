@@ -8,7 +8,6 @@ Panels:
         - /Status1
         - /Grid1
         - /MarkerArray3
-        - /TF1
         - /TF1/Frames1
         - /Path1
       Splitter Ratio: 0.5
@@ -110,8 +109,7 @@ Visualization Manager:
       Enabled: true
       Name: MarkerArray
       Namespaces:
-        slam_toolbox: true
-        slam_toolbox_edges: true
+        {}
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -123,7 +121,7 @@ Visualization Manager:
       Enabled: true
       Name: MarkerArray
       Namespaces:
-        frontiers: true
+        {}
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -148,10 +146,6 @@ Visualization Manager:
           Value: false
         lidar:
           Value: false
-        map:
-          Value: true
-        odom:
-          Value: true
         rear_bar:
           Value: false
         rear_caster:
@@ -164,37 +158,13 @@ Visualization Manager:
           Value: false
         wheel_right:
           Value: false
-      Marker Scale: 3
+      Marker Scale: 10
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        map:
-          odom:
-            base_link:
-              camera:
-                {}
-              front_caster:
-                {}
-              imu_link:
-                {}
-              left_bar:
-                {}
-              lidar:
-                {}
-              rear_bar:
-                {}
-              rear_caster:
-                {}
-              right_bar:
-                {}
-              top_base:
-                {}
-              wheel_left:
-                {}
-              wheel_right:
-                {}
+        {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -304,7 +274,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: 0
+      Angle: 0.014999992214143276
       Class: rviz_default_plugins/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
@@ -314,11 +284,11 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 51.761592864990234
+      Scale: 131.5751953125
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz_default_plugins)
-      X: 1.2158886194229126
-      Y: 18.275409698486328
+      X: 0.21143867075443268
+      Y: 0.10552135854959488
     Saved: ~
 Window Geometry:
   Displays:
