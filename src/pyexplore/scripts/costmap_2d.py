@@ -27,9 +27,8 @@ import numpy as np
 
 class PyCostmap2D:
     """
-    PyCostmap2D.
-
-    Costmap Python3 API for OccupancyGrids to populate from published messages
+    PyCostmap2D
+    How it works -- http://wiki.ros.org/costmap_2d
     """
 
     def __init__(self, occupancy_map):
@@ -39,7 +38,6 @@ class PyCostmap2D:
         Args:
         ----
             occupancy_map (OccupancyGrid): 2D OccupancyGrid Map
-
         """
         self.size_x = occupancy_map.info.width
         self.size_y = occupancy_map.info.height

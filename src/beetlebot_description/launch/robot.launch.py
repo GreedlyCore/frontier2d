@@ -11,6 +11,8 @@ from launch_ros.actions import Node
 from launch.substitutions import Command
 from ament_index_python.packages import (get_package_prefix, get_package_share_directory)
 
+# This launch file used for creation of only one robot
+
 def generate_launch_description():
     # Configure ROS nodes for launch
     package_description = "beetlebot_description"
@@ -19,8 +21,6 @@ def generate_launch_description():
     # Setup project paths
     pkg_project_gazebo = get_package_share_directory('beetlebot_gazebo')
     package_directory_description = get_package_share_directory(package_description)
-    pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
-
     # Set the Path to Robot Mesh Models for Loading in Gazebo Sim
     install_dir_path = get_package_prefix(package_description) + "/share"
     install_gazebo_dir_path = get_package_prefix(package_gazebo) + "/share"
@@ -35,7 +35,7 @@ def generate_launch_description():
         else:
             os.environ[env_var] = (':'.join(gazebo_resource_paths))
 
-    # Load the SDF file from "description" package
+    # Load the URDF file from "description" package
     urdf_file = 'beetlebot.xacro'
     robot_desc_path = os.path.join(package_directory_description, "urdf", urdf_file)
 
@@ -48,17 +48,6 @@ def generate_launch_description():
         value_type=str
     )
 
-    # Setup to launch the simulator and Gazebo world
-    gz_sim = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')),
-        launch_arguments={'gz_args': PathJoinSubstitution([
-            pkg_project_gazebo,
-            'worlds',
-            'empty_world.sdf'
-        ])}.items(),
-    )
-
     # Spawn the Robot
     declare_spawn_x = DeclareLaunchArgument("x", default_value="0.0",
                                             description="Model Spawn X Axis Value")
@@ -69,7 +58,7 @@ def generate_launch_description():
     gz_spawn_entity = Node(
         package="ros_gz_sim",
         executable="create",
-        name="my_robot_spawn",
+        name="single_robot_spawn",
         arguments=[
             "-name", "beetlebot",
             "-allow_renaming", "true",
@@ -92,15 +81,7 @@ def generate_launch_description():
             {'robot_description': robot_description},
         ]
     )
-
-    # RViz
-    rviz = Node(
-       package='rviz2',
-       executable='rviz2',
-       arguments=['-d', os.path.join(pkg_project_gazebo, 'rviz', 'beetlebot.rviz')],
-       condition=IfCondition(LaunchConfiguration('rviz'))
-    )
-
+    
     # ROS-Gazebo Bridge
     bridge = Node(
         package='ros_gz_bridge',
@@ -108,28 +89,29 @@ def generate_launch_description():
         parameters=[{
             'config_file': os.path.join(pkg_project_gazebo, 'config', 'beetlebot_ros_bridge.yaml'),
             'qos_overrides./tf_static.publisher.durability': 'transient_local',
+            'qos_overrides./joint_states.publisher.history': 'keep_last',  
+            'qos_overrides./joint_states.publisher.depth': 10,  
+            'use_sim_time': True
         }],
+        # arguments=['--ros-args', '--log-level', 'WARN'],  # Suppressing INFO logs
         output='screen'
     )
 
-        # For publishing and controlling the robot pose, we need joint states of the robot
+    # For publishing and controlling the robot pose, we need joint states of the robot
     joint_state_publisher = Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
         name='joint_state_publisher',
-        output=['screen']
+        output='screen',
+        parameters=[{'use_sim_time': True},]
     )
 
     return LaunchDescription([
-
         declare_spawn_x,
         declare_spawn_y,
         declare_spawn_z,
         gz_spawn_entity,
-        gz_sim,
         joint_state_publisher,
-        DeclareLaunchArgument('rviz', default_value='true', description='Open RViz.'),
-        bridge,
         robot_state_publisher,
-        rviz
+        bridge,
     ])

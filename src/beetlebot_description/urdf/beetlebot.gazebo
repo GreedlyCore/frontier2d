@@ -45,21 +45,22 @@
     <!-- Laser Scanner Plugin -->
     <!-- https://github.com/gazebosim/gz-sim/issues/1473 -->
     <!-- Called once in separated -->
-    <gazebo>
+
+    <!-- <gazebo>
         <plugin
             filename="ignition-gazebo-sensors-system"
             name="ignition::gazebo::systems::Sensors">
             <render_engine>ogre2</render_engine>
         </plugin>
-    </gazebo>
+    </gazebo> -->
 
     <gazebo reference="lidar">
-        <sensor name="lidar" type="gpu_lidar"> <pose relative_to='lidar'>0 0 0 0 0 0</pose>
-            <frame_id>lidar</frame_id>
+        <sensor name="gpu_lidar" type="gpu_lidar"> 
+            <pose relative_to='lidar'>0 0 0 0 0 0</pose>
+            <gz_frame_id>lidar</gz_frame_id>
             <always_on>1</always_on>
             <visualize>true</visualize>
             <topic>$(arg namespace)lidar</topic>
-            <frame_id>lidar</frame_id>
             <update_rate>10</update_rate>
             <ray>
                 <scan>
@@ -81,9 +82,18 @@
                     <max>12.0</max>
                     <resolution>0.01</resolution>
                 </range>
+                <noise>
+                    <type>gaussian</type>
+                    <!-- Noise parameters based on published spec for Hokuyo laser
+                         achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+                         stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+                         reading.  -->
+                    <mean>0.0</mean>
+                    <stddev>0.01</stddev>
+                </noise>
             </ray>
         </sensor>
-    </gazebo>
+    </gazebo> 
 
     <gazebo reference="camera">
         <sensor name="camera" type="camera">
@@ -147,7 +157,8 @@
     </gazebo>
 
     <gazebo>
-
+        <!-- Meow -->
+        <!-- https://gazebosim.org/api/gazebo/6/classignition_1_1gazebo_1_1systems_1_1JointPositionController.html -->
         <plugin
             filename="ignition-gazebo-joint-position-controller-system"
             name="ignition::gazebo::systems::JointPositionController">
@@ -183,10 +194,10 @@
             <topic>$(arg namespace)cmd_vel</topic>
             <publish_wheel_tf>false</publish_wheel_tf>
 
-            <!-- <tf_topic>$(arg namespace)tf</tf_topic>
-            <odom_topic>$(arg namespace)odom</odom_topic>
-            <frame_id>odom</frame_id>
-            <child_frame_id>base_link</child_frame_id> -->
+            <!-- <tf_topic>$(arg namespace)tf</tf_topic> -->
+            <!-- <odom_topic>$(arg namespace)odom</odom_topic> -->
+            <!-- <frame_id>odom</frame_id> -->
+            <!-- <child_frame_id>base_link</child_frame_id> -->
         </plugin>
 
         <!--  add OdometryPublisher plugin to publish odometry instedad of diff-drive plugin 

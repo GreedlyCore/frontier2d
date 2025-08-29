@@ -8,6 +8,7 @@ from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch.actions import OpaqueFunction
 
+#TODO: wtf is that ?
 
 def launch_setup(context, *args, **kwargs):
     ####### DATA INPUT ##########

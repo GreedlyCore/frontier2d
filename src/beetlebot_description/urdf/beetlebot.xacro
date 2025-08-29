@@ -320,6 +320,10 @@
             <geometry>
                 <cylinder radius="0.1" length="0.13538975482266932" />
             </geometry>
+            <!-- TODO later line 246 - https://github.com/gazebosim/docs/blob/master/fortress/tutorials/spawn_urdf/rrbot.urdf-->
+            <!-- <geometry>
+                <mesh filename="package://rrbot_description/meshes/hokuyo.dae"/>
+            </geometry> -->
             <material name="lidar_material" />
         </visual>
         <collision>

@@ -6,4 +6,5 @@ maps/
 explore/
 map_merge/
 robot_localization/
+beetlebot_algo/*
 *.pyc

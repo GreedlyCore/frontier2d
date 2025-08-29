@@ -11,11 +11,12 @@
     <!-- Laser Scanner Plugin -->
     <!-- https://github.com/gazebosim/gz-sim/issues/1473 -->
     <!-- TODO: Separate file for world plugins? -->
-    <!-- <plugin
+    <!-- Should be called once -->
+    <plugin
       filename="ignition-gazebo-sensors-system"
       name="ignition::gazebo::systems::Sensors">
       <render_engine>ogre2</render_engine>
-    </plugin> -->
+    </plugin>
 
     <plugin
       filename="ignition-gazebo-physics-system"
@@ -120,65 +121,91 @@
 
     <!-- Dynamic Object - Actor !!! -->
     <!-- https://gazebosim.org/docs/fortress/actors/ -->
-
-    <!-- <actor name="actor_walking">
+    <!-- Using stock plugin we can just setup a fixed path, not a random walk -->
+    <!-- TODO: switch to random walk via this plugin? https://github.com/bach05/gazebo-plugin-autonomous-actor/tree/main -->
+    <actor name="actor">
       <skin>
         <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
         <scale>1.0</scale>
       </skin>
-      <animation name="walk">
+      <pose>0 0 0 0 0 0</pose>
+      <animation name="walking">
         <filename>https://fuel.gazebosim.org/1.0/Mingfei/models/actor/tip/files/meshes/walk.dae</filename>
+        <scale>1</scale>
+        <interpolate_x>true</interpolate_x>
       </animation>
       <script>
         <loop>true</loop>
-        <delay_start>0.000000</delay_start>
+        <delay_start>0</delay_start>
         <auto_start>true</auto_start>
-        <trajectory id="0" type="walk" tension="0.6">
-          <waypoint>
-            <time>0</time>
-            <pose>0 0 1.0 0 0 0</pose>
-          </waypoint>
-          <waypoint>
-            <time>2</time>
-            <pose>2.0 0 1.0 0 0 0</pose>
-          </waypoint>
-          <waypoint>
-            <time>2.5</time>
-            <pose>2 0 1.0 0 0 1.57</pose>
-          </waypoint>
-          <waypoint>
-            <time>4</time>
-            <pose>2 2 1.0 0 0 1.57</pose>
-          </waypoint>
-          <waypoint>
-            <time>4.5</time>
-            <pose>2 2 1.0 0 0 3.142</pose>
-          </waypoint>
-          <waypoint>
-            <time>6</time>
-            <pose>0 2 1 0 0 3.142</pose>
-          </waypoint>
-          <waypoint>
-            <time>6.5</time>
-            <pose>0 2 1 0 0 -1.57</pose>
-          </waypoint>
-          <waypoint>
-            <time>8</time>
-            <pose>0 0 1.0 0 0 -1.57</pose>
-          </waypoint>
-          <waypoint>
-            <time>8.5</time>
-            <pose>0 0 1.0 0 0 0</pose>
-          </waypoint>
+        <trajectory id="0" type="walking">
+          <!-- Warehouse path covering 15x20 meter area (-7.5 to 7.5 X, -10 to 10 Y) -->
+          <waypoint><time>0.0</time><pose>-6.0 -8.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>1.5</time><pose>-6.0 -6.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>3.0</time><pose>-6.0 -4.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>4.5</time><pose>-6.0 -2.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>6.0</time><pose>-6.0 0.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>7.5</time><pose>-6.0 2.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>9.0</time><pose>-6.0 4.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>10.5</time><pose>-6.0 6.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>12.0</time><pose>-6.0 8.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>13.5</time><pose>-4.0 8.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>15.0</time><pose>-4.0 6.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>16.5</time><pose>-4.0 4.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>18.0</time><pose>-4.0 2.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>19.5</time><pose>-4.0 0.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>21.0</time><pose>-4.0 -2.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>22.5</time><pose>-4.0 -4.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>24.0</time><pose>-4.0 -6.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>25.5</time><pose>-4.0 -8.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>27.0</time><pose>-2.0 -8.0 1.0 0 0 3.14</pose></waypoint>
+          <waypoint><time>28.5</time><pose>-2.0 -6.0 1.0 0 0 3.14</pose></waypoint>
+          <waypoint><time>30.0</time><pose>-2.0 -4.0 1.0 0 0 3.14</pose></waypoint>
+          <waypoint><time>31.5</time><pose>-2.0 -2.0 1.0 0 0 3.14</pose></waypoint>
+          <waypoint><time>33.0</time><pose>-2.0 0.0 1.0 0 0 3.14</pose></waypoint>
+          <waypoint><time>34.5</time><pose>-2.0 2.0 1.0 0 0 3.14</pose></waypoint>
+          <waypoint><time>36.0</time><pose>-2.0 4.0 1.0 0 0 3.14</pose></waypoint>
+          <waypoint><time>37.5</time><pose>-2.0 6.0 1.0 0 0 3.14</pose></waypoint>
+          <waypoint><time>39.0</time><pose>-2.0 8.0 1.0 0 0 3.14</pose></waypoint>
+          <waypoint><time>40.5</time><pose>0.0 8.0 1.0 0 0 4.71</pose></waypoint>
+          <waypoint><time>42.0</time><pose>0.0 6.0 1.0 0 0 4.71</pose></waypoint>
+          <waypoint><time>43.5</time><pose>0.0 4.0 1.0 0 0 4.71</pose></waypoint>
+          <waypoint><time>45.0</time><pose>0.0 2.0 1.0 0 0 4.71</pose></waypoint>
+          <waypoint><time>46.5</time><pose>0.0 0.0 1.0 0 0 4.71</pose></waypoint>
+          <waypoint><time>48.0</time><pose>0.0 -2.0 1.0 0 0 4.71</pose></waypoint>
+          <waypoint><time>49.5</time><pose>0.0 -4.0 1.0 0 0 4.71</pose></waypoint>
+          <waypoint><time>51.0</time><pose>0.0 -6.0 1.0 0 0 4.71</pose></waypoint>
+          <waypoint><time>52.5</time><pose>0.0 -8.0 1.0 0 0 4.71</pose></waypoint>
+          <waypoint><time>54.0</time><pose>2.0 -8.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>55.5</time><pose>2.0 -6.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>57.0</time><pose>2.0 -4.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>58.5</time><pose>2.0 -2.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>60.0</time><pose>2.0 0.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>61.5</time><pose>2.0 2.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>63.0</time><pose>2.0 4.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>64.5</time><pose>2.0 6.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>66.0</time><pose>2.0 8.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>67.5</time><pose>4.0 8.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>69.0</time><pose>4.0 6.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>70.5</time><pose>4.0 4.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>72.0</time><pose>4.0 2.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>73.5</time><pose>4.0 0.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>75.0</time><pose>4.0 -2.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>76.5</time><pose>4.0 -4.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>78.0</time><pose>4.0 -6.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>79.5</time><pose>4.0 -8.0 1.0 0 0 1.57</pose></waypoint>
+          <waypoint><time>81.0</time><pose>6.0 -8.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>82.5</time><pose>6.0 -6.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>84.0</time><pose>6.0 -4.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>85.5</time><pose>6.0 -2.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>87.0</time><pose>6.0 0.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>88.5</time><pose>6.0 2.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>90.0</time><pose>6.0 4.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>91.5</time><pose>6.0 6.0 1.0 0 0 0</pose></waypoint>
+          <waypoint><time>93.0</time><pose>6.0 8.0 1.0 0 0 0</pose></waypoint>
         </trajectory>
       </script>
-    </actor> -->
-
-    <!-- <include>
-      <uri>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Walking Actor</uri>
-      <name>walking_actor</name>
-      <pose>0 0 1.0 0 0 0</pose>
-    </include> -->
+    </actor>
 
     <!-- Base -->
     <include>

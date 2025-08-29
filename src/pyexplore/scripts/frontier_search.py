@@ -12,7 +12,7 @@ import numpy as np
 from scipy import ndimage
 from geometry_msgs.msg import Point
 
-from tools import nearest_cell, nhood4, nhood8
+# from tools import nearest_cell, nhood4, nhood8
 
 # ROS2 Costmap values (different from PGM!)
 FREE_SPACE = 0
@@ -80,11 +80,9 @@ class FrontierSearch:
                     "Robot out of costmap bounds, cannot search for frontiers")
                 return frontier_list
             
-            # Take snapshot of current map state to avoid inconsistencies
             self.map = self.costmap.getMap().copy()  # ← Important: copy()
             self.size_x = self.costmap.getSizeInCellsX()
             self.size_y = self.costmap.getSizeInCellsY()
-            
             # Store robot position in map coordinates
             robot_pos = (mx, my)
         
@@ -114,12 +112,11 @@ class FrontierSearch:
         # Sort frontiers by cost
         frontier_list.sort(key=lambda f: f.cost)
         
-        return frontier_list
+        return frontier_list, frontier_cells
     
     def find_frontiers_dilate(self, grid_map: np.ndarray) -> np.ndarray:
         """
         Find frontier cells using morphological dilation
-        Fixed version with correct ROS costmap values
         
         Args:
             grid_map: 2D numpy array representing the occupancy grid
@@ -194,7 +191,7 @@ class FrontierSearch:
                 centroid_row = np.mean(region_coords[0])
                 centroid_col = np.mean(region_coords[1])
                 
-                # Store as (x, y) in map coordinates - FIXED coordinate order
+                # Store as (x, y) in map coordinates
                 centroids.append((int(round(centroid_col)), int(round(centroid_row))))
                 filtered_frontiers |= region_mask
             
@@ -306,49 +303,12 @@ class FrontierSearch:
         """
         Calculate cost of frontier
         
+        potential*min_dist*resolution - gain*size*resolution
+        
         Args:
             frontier: Frontier object
             
         Returns:
             float - frontier cost
         """
-        return (self.potential_scale * frontier.min_distance * 
-                self.costmap.getResolution()) - \
-               (self.gain_scale * frontier.size * self.costmap.getResolution())
-    
-    def nearest_cell(self, pos: int, target_value: int) -> int:
-        """
-        Find nearest cell with target value 
-        
-        Args:
-            pos: int - starting position index
-            target_value: int - target cell value to find
-            
-        Returns:
-            int - index of nearest cell, or None if not found
-        """
-        return nearest_cell(pos, target_value, self.costmap)
-        
-    def nhood4(self, idx: int) -> List[int]:
-        """
-        Get 4-connected neighborhood indices
-        
-        Args:
-            idx: int - center cell index
-            
-        Returns:
-            List[int] - list of neighbor indices
-        """
-        return nhood4(idx, self.costmap)
-    
-    def nhood8(self, idx: int) -> List[int]:
-        """
-        Get 8-connected neighborhood indices
-        
-        Args:
-            idx: int - center cell index
-            
-        Returns:
-            List[int] - list of neighbor indices
-        """
-        return nhood8(idx, self.costmap)
+        return self.costmap.getResolution() * ( (self.potential_scale * frontier.min_distance) - (self.gain_scale * frontier.size) )

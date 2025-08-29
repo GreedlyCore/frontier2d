@@ -22,14 +22,6 @@
             name="gz::sim::systems::SceneBroadcaster">
         </plugin>
 
-
-        <!-- define custom gui plugins to the world -->
-
-        <!-- <gui fullscreen="0">
-      <plugin filename="VisualizeLidar" name="Visualize Lidar">
-      </plugin>
-    </gui> -->
-
         <!-- add robot sensors plugins to the world -->
 
         <!-- add imu plugin to the world -->
@@ -38,11 +30,12 @@
         </plugin>
 
         <!-- add lidar plugin to the world -->
-        <plugin
+        <!-- Some issues with robot spawn -> commented -->
+        <!-- <plugin
             filename="gz-sim-sensors-system"
             name="gz::sim::systems::Sensors">
             <render_engine>ogre2</render_engine>
-        </plugin>
+        </plugin> -->
 
 
         <light type="directional" name="sun">
@@ -94,7 +87,7 @@
                     </material>
                 </visual>
             </link>
-        </model>
+        </model> 
 
         <!--  movment plugins to control robot using gzsim teleop with keyboard (No ROS) -->
 
@@ -152,8 +145,5 @@
                 linear: {x: 0.0}, angular: {z: 0.0}
             </output>
         </plugin>
-
-        <!-- Include a "beetlebot" robot inside beetlebot model as nested model  -->
-
     </world>
 </sdf>

@@ -62,33 +62,31 @@ class Costmap2DClient:
         self.transform_tolerance_ = self.node_.get_parameter('transform_tolerance').get_parameter_value().double_value
         
         # initialize costmap
-        self.costmap_sub_ = self.node_.create_subscription(
-            OccupancyGrid,
-            costmap_topic,
-            self._costmap_callback,
-            1000
-        )
-        
-        
-        
-        # ROS1 CODE
-        # auto costmap_msg =
-        # ros::topic::waitForMessage<nav_msgs::msg::OccupancyGrid>(
-        #     costmap_topic, subscription_nh);
-
+        self.costmap_sub_ = self.node_.create_subscription(OccupancyGrid, costmap_topic, self._costmap_callback, 100)
+    
         # Spin some until the callback gets called to replicate
-        # ros::topic::waitForMessage
         self.node_.get_logger().info(
             f"Waiting for costmap to become available, topic: {costmap_topic}"
         )
-        # while not self.costmap_received_:
-        #     rclpy.spin_once(self.node_, timeout_sec=0.1)
-        #     # Wait for a second
-        #     time.sleep(1.0)
-            
-        # updateFullMap(costmap_msg); # this is already called in the callback of
-        # the costmap_sub_
-        
+          
+        # Create a future that will be set when costmap is received
+        # https://robotics.stackexchange.com/questions/91278/ros2-correct-usage-of-spin-once-to-receive-multiple-callbacks-synchronized
+        future = rclpy.task.Future()
+        self.costmap_future = future
+        try:
+            rclpy.spin_until_future_complete(
+                self.node_, 
+                future, 
+                timeout_sec=30.0
+            )
+            if not future.done():
+                self.node_.get_logger().error(
+                    f"Timeout waiting for costmap on topic: {costmap_topic}"
+                )
+                raise RuntimeError("Costmap not received within timeout")     
+        except Exception as e:
+            self.node_.get_logger().error(f"Error waiting for costmap: {e}")
+            raise
         
         # subscribe to map updates
         self.costmap_updates_sub_ = self.node_.create_subscription(
@@ -98,20 +96,7 @@ class Costmap2DClient:
             1000
         )
         
-        # ROS1 CODE.
-        # TODO: Do we need this?
-        # resolve tf prefix for robot_base_frame
-        # std::string tf_prefix = tf::getPrefixParam(node_);
-        # robot_base_frame_ = tf::resolve(tf_prefix, robot_base_frame_);
-
-        # we need to make sure that the transform between the robot base frame and
-        # the global frame is available
-
-        # the global frame is set in the costmap callback. This is why we need to
-        # ensure that a costmap is received
-
-        # tf transform is necessary for getRobotPose
-         
+        # TF transform is necessary for get_robot_pose method
         last_error = self.node_.get_clock().now()
         tf_error = ""
         while rclpy.ok():
@@ -139,16 +124,22 @@ class Costmap2DClient:
                 last_error = current_time
             
             # The error string will accumulate and errors will typically be the same,
-            # so the last
-            # will do for the warning above. Reset the string here to avoid
-            # accumulation.
+            # so the last will do for the warning above. 
+            # Reset the string here to avoid accumulation.
             tf_error = ""
-    
+        self.node_.get_logger().info(f"Costmap2D client node is initted")
+        
+    def get_costmap(self):
+        """Get the costmap object"""
+        return self.costmap_
     def _costmap_callback(self, msg: OccupancyGrid):
         """Callback for full costmap updates"""
         if not self.costmap_:
             self.costmap_ = PyCostmap2D(msg)  # Using nav2's Python costmap wrapper
         self.costmap_received_ = True
+        # Set the future to complete the wait
+        if hasattr(self, 'costmap_future') and not self.costmap_future.done():
+            self.costmap_future.set_result(True)
         self.update_full_map(msg)
     
     def _costmap_updates_callback(self, msg: OccupancyGridUpdate):
@@ -166,7 +157,7 @@ class Costmap2DClient:
         origin_y = msg.info.origin.position.y
         
         self.node_.get_logger().debug(
-            f"received full new map, resizing to: {size_in_cells_x}, {size_in_cells_y}"
+            f"Received full new map, resizing to: {size_in_cells_x}, {size_in_cells_y}"
         )
         
         self.costmap_.resizeMap(size_in_cells_x, size_in_cells_y, resolution, origin_x, origin_y)
@@ -270,7 +261,3 @@ class Costmap2DClient:
                 throttle_duration_sec=1.0
             )
             return empty_pose
-    
-    def get_costmap(self):
-        """Get the costmap object"""
-        return self.costmap_

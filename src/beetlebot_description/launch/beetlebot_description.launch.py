@@ -10,12 +10,11 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.actions import Node
 
+#TODO: wtf is that?chat
 
 def generate_launch_description():
-
     # Setup project paths
     package_description ="beetlebot_description"
-
     pkg_project_description = get_package_share_directory('beetlebot_description')
     package_directory = get_package_share_directory(package_description)
 
@@ -68,17 +67,17 @@ def generate_launch_description():
     )
 
     # Visualize in RViz
-    rviz = Node(
-       package='rviz2',
-       executable='rviz2',
-       arguments=['-d', os.path.join(pkg_project_description, 'config', 'beetlebot.rviz')],
-       condition=IfCondition(LaunchConfiguration('rviz'))
-    )
+    # rviz = Node(
+    #    package='rviz2',
+    #    executable='rviz2',
+    #    arguments=['-d', os.path.join(pkg_project_description, 'config', 'beetlebot.rviz')],
+    #    condition=IfCondition(LaunchConfiguration('rviz'))
+    # )
 
     return LaunchDescription([
-        DeclareLaunchArgument('rviz', default_value='true',
-                              description='Open RViz.'),
+        # DeclareLaunchArgument('rviz', default_value='true',
+        #                       description='Open RViz.'),
         joint_state_publisher,
         robot_state_publisher_node,
-        rviz
+        # rviz
     ])
